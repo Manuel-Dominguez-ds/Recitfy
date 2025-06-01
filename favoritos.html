@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Recetas Favoritas - Recetas en Casa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ff914d;
+      --primary-dark: #ff7a26;
+      --accent-color: #4cb050;
+      --text-color: #333;
+      --light-gray: #f5f5f5;
+      --white: #ffffff;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      padding: 1.2rem 5%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 25px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 8px 12px;
+      border-radius: 20px;
+    }
+
+    nav a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .active {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 5%;
+    }
+
+    .page-title {
+      margin-bottom: 1.5rem;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 8px;
+    }
+
+    .page-title::after {
+      content: '';
+      position: absolute;
+      width: 60%;
+      height: 3px;
+      background-color: var(--primary-color);
+      bottom: 0;
+      left: 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .empty-state h2 {
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+      color: #666;
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .recetas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .receta {
+      background-color: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .receta:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    }
+
+    .receta-img {
+      height: 180px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .receta-info {
+      padding: 1.5rem;
+    }
+
+    .receta h3 {
+      margin-bottom: 10px;
+      color: var(--primary-dark);
+    }
+
+    .receta p {
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .receta-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .tiempo {
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    .btn {
+      background-color: var(--accent-color);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #429644;
+    }
+
+    .btn-remove {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(231, 76, 60, 0.8);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn-remove:hover {
+      background-color: rgb(231, 76, 60);
+    }
+
+    /* Categorías para diferentes fondos */
+    .pizza { background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'); }
+    .galletas { background-image: url('https://images.unsplash.com/photo-1558961363-fa8fdf82db35?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'); }
+    .quinoa { background-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'); }
+    .desayuno { background-image: url('https://images.unsplash.com/photo-1533089860892-a9b969df67af?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'); }
+    .almuerzo { background-image: url('https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'); }
+    .cena { background-image: url('https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'); }
+    .postre { background-image: url('https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'); }
+    .saludable { background-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'); }
+    .vegetariano { background-image: url('https://images.unsplash.com/photo-1520699049698-acd2fccb8cc8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'); }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .recetas-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 10px;
+      }
+      
+      .header-container {
+        flex-direction: column;
+      }
+      
+      nav a {
+        margin: 5px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <h1>Recetas en Casa</h1>
+      <nav>
+        <a href="home.html">Inicio</a>
+        <a href="#">Mis Datos</a>
+        <a href="#">Mis Recetas</a>
+        <a href="favoritos.html" class="active">Favoritos</a>
+        <a href="index.html">Salir</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2 class="page-title">Mis Recetas Favoritas</h2>
+    
+    <!-- Estado vacío (se muestra cuando no hay favoritos) -->
+    <div id="empty-state" style="display: none;" class="empty-state">
+      <i class="fas fa-heart-broken"></i>
+      <h2>Aún no tienes recetas favoritas</h2>
+      <p>Explora nuestras recetas y guarda tus favoritas para acceder a ellas fácilmente.</p>
+      <a href="home.html" class="btn-primary">Explorar recetas</a>
+    </div>
+    
+    <!-- Contenedor de recetas favoritas -->
+    <div id="favoritos-container" class="recetas-grid">
+      <!-- Las recetas favoritas se cargarán aquí dinámicamente -->
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 Recetas en Casa - Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    // Verificar si hay usuario logueado
+    document.addEventListener('DOMContentLoaded', function() {
+      // Comentado para facilitar pruebas - descomenta en producción
+      const usuario = localStorage.getItem('usuario');
+      if (!usuario) {
+        // Si no hay usuario, redirigir al login
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      // Cargar recetas favoritas
+      cargarFavoritos();
+    });
+    
+    async function cargarFavoritos() {
+      try {
+        // Primero intentamos obtener los favoritos del localStorage
+        const favoritosStr = localStorage.getItem('favoritos');
+        let favoritos = [];
+        
+        if (favoritosStr) {
+          favoritos = JSON.parse(favoritosStr);
+        }
+        
+        if (favoritos.length === 0) {
+          // Mostrar estado vacío
+          document.getElementById('empty-state').style.display = 'block';
+          document.getElementById('favoritos-container').style.display = 'none';
+          return;
+        }
+        
+        // Mostrar contenedor de favoritos
+        document.getElementById('empty-state').style.display = 'none';
+        document.getElementById('favoritos-container').style.display = 'grid';
+        
+        // Obtener detalles de cada receta favorita
+        const contenedor = document.getElementById('favoritos-container');
+        contenedor.innerHTML = ''; // Limpiar cualquier contenido previo
+        
+        for (const idReceta of favoritos) {
+          try {
+            // Obtener detalles de la receta
+            const response = await fetch(`http://23.21.252.13:5000/recetas/${idReceta}`);
+            
+            if (!response.ok) {
+              console.error(`Error al obtener la receta ${idReceta}`);
+              continue; // Pasar a la siguiente receta
+            }
+            
+            const receta = await response.json();
+            
+            // Crear tarjeta de receta
+            const recetaCard = crearTarjetaReceta(receta);
+            contenedor.appendChild(recetaCard);
+            
+          } catch (error) {
+            console.error(`Error al procesar la receta ${idReceta}:`, error);
+          }
+        }
+        
+      } catch (error) {
+        console.error('Error al cargar favoritos:', error);
+        document.getElementById('favoritos-container').innerHTML = 
+          '<p class="empty-state">Error al cargar tus recetas favoritas. Intenta de nuevo más tarde.</p>';
+      }
+    }
+    
+    function crearTarjetaReceta(receta) {
+      const recetaCard = document.createElement('div');
+      recetaCard.className = 'receta';
+      
+      // Determinar la clase de imagen basada en la categoría
+      let imgClass = receta.categoria ? receta.categoria.toLowerCase() : 'pizza';
+      if (!['pizza', 'galletas', 'quinoa', 'desayuno', 'almuerzo', 'cena', 'postre', 'saludable', 'vegetariano'].includes(imgClass)) {
+        imgClass = ['pizza', 'galletas', 'quinoa'][Math.floor(Math.random() * 3)];
+      }
+      
+      // Truncar las instrucciones para mostrar solo un extracto
+      const instruccionesCortas = receta.instrucciones 
+        ? receta.instrucciones.substring(0, 100) + '...'
+        : 'No hay instrucciones disponibles.';
+      
+      recetaCard.innerHTML = `
+        <div class="btn-remove" data-id="${receta.id_receta}" onclick="eliminarFavorito(${receta.id_receta})">
+          <i class="fas fa-times"></i>
+        </div>
+        <div class="receta-img ${imgClass}"></div>
+        <div class="receta-info">
+          <h3>${receta.nombre}</h3>
+          <p>${instruccionesCortas}</p>
+          <div class="receta-footer">
+            <span class="tiempo">⏱️ ${receta.tiempo} minutos</span>
+            <a href="receta.html?id=${receta.id_receta}" class="btn">Ver receta</a>
+          </div>
+        </div>
+      `;
+      
+      return recetaCard;
+    }
+    
+    function eliminarFavorito(id) {
+      // Confirmar antes de eliminar
+      if (!confirm('¿Estás seguro de que deseas eliminar esta receta de tus favoritos?')) {
+        return;
+      }
+      
+      try {
+        // Obtener lista actual de favoritos
+        const favoritosStr = localStorage.getItem('favoritos');
+        let favoritos = [];
+        
+        if (favoritosStr) {
+          favoritos = JSON.parse(favoritosStr);
+        }
+        
+        // Filtrar el ID a eliminar
+        favoritos = favoritos.filter(favId => favId !== id);
+        
+        // Guardar la lista actualizada
+        localStorage.setItem('favoritos', JSON.stringify(favoritos));
+        
+        // Refrescar la vista
+        cargarFavoritos();
+        
+      } catch (error) {
+        console.error('Error al eliminar favorito:', error);
+        alert('No se pudo eliminar la receta de favoritos. Intenta nuevamente.');
+      }
+    }
+    
+    // Función para simular favoritos en caso de no existir (para demostración)
+    function simularFavoritos() {
+      if (!localStorage.getItem('favoritos')) {
+        localStorage.setItem('favoritos', JSON.stringify([1, 2, 3]));
+        cargarFavoritos();
+      }
+    }
+    
+    // Descomenta para simular favoritos durante el desarrollo
+    // simularFavoritos();
+  </script>
+</body>
+</html>
